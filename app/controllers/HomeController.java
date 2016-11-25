@@ -3,13 +3,14 @@ package controllers;
 import play.api.Environment;
 import play.mvc.*;
 import play.data.*;
-import play.db.ebean.Transactional;
+        import play.db.ebean.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
+        import java.util.ArrayList;
+        import java.util.List;
+        import javax.inject.Inject;
 
-import views.html.*;
+        import views.html.*;
+
 
 // Import models
 import models.*;
@@ -70,11 +71,13 @@ public class HomeController extends Controller {
         // Extract the product from the form object
         Product newProduct = newProductForm.get();
 
-        // Save to the database via Ebean (remember Product extends Model)
-        newProduct.save();
+        if(newProduct.getId() == null) {
+            newProduct.save();
+        }
+        else if (newProduct.getId() != null){
+            newProduct.update();
+        }
 
-        // Set a success message in temporary flash
-        // for display in return view
         flash("success", "Product " + newProduct.getName() + " has been created");
 
         // Redirect to the admin home
@@ -91,5 +94,20 @@ public class HomeController extends Controller {
 
         // Redirect to products page
         return redirect(routes.HomeController.products());
+    }
+    @Transactional
+    public Result updateProduct(Long id){
+        Product p;
+        Form<Product> productForm;
+
+        try {
+            p = Product.find.byId(id);
+
+            productForm = formFactory.form(Product.class).fill(p);
+
+        } catch (Exception ex){
+            return badRequest("error");
+        }
+        return ok(addProduct.render(productForm));
     }
 }

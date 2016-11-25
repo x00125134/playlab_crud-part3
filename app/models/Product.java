@@ -11,8 +11,9 @@ import play.data.validation.*;
 @Entity
 public class Product extends Model {
 
-    // Properties
-    // Annotate id as the primary key
+
+
+
     @Id
     private Long id;
 
@@ -20,8 +21,8 @@ public class Product extends Model {
     @Constraints.Required
     private String name;
 
-    @Constraints.Required
-    private String category;
+    @ManyToOne
+    private String Category;
 
     @Constraints.Required
     private String description;
@@ -94,10 +95,10 @@ public class Product extends Model {
     }
 
     public String getCategory() {
-        return category;
+        return Category;
     }
 
     public void setCategory(String category) {
-        this.category = category;
+        this.Category = Category;
     }
 }
